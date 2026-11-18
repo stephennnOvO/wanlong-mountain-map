@@ -5,6 +5,9 @@ const fs = require('node:fs'),
 const project = path.resolve(__dirname, '..'),
   work = path.join(project, '.build', 'work'),
   dist = path.join(project, 'dist');
+const resortOnly = process.argv.includes('--resort');
+const both = process.argv.includes('--all');
+if (resortOnly && both) throw Error('Choose --resort or --all.');
 if (process.argv.includes('--clean')) {
   for (const dir of [work, dist]) fs.rmSync(dir, { recursive: true, force: true });
 }
@@ -45,22 +48,27 @@ const cachePath = path.join(work, 'research/restart-20261104/local-terrain-cache
 cache.fingerprint = require(path.join(work, 'tools/local-terrain-cache.cjs')).fingerprint();
 fs.writeFileSync(cachePath, JSON.stringify(cache));
 fs.mkdirSync(path.join(work, 'research/delivery-review'), { recursive: true });
-for (const command of ['build.cjs', 'package-delivery.cjs']) {
-  const result = cp.spawnSync(process.execPath, [path.join(work, 'tools', command)], {
-    cwd: work,
-    stdio: 'inherit',
-    env: {
-      ...process.env,
-      WANLONG_INTERNAL: '0',
-      WANLONG_BUILD_SUFFIX: '',
-      WANLONG_LOCAL_CACHE: uncached ? '0' : '1',
-      WANLONG_LOCAL_DEM: '1',
-      WANLONG_RAW_DEM: '0',
-    },
-  });
-  if (result.status !== 0) process.exit(result.status || 1);
+function buildMap(target, scoped) {
+  for (const command of ['build.cjs', 'package-delivery.cjs']) {
+    const result = cp.spawnSync(process.execPath, [path.join(work, 'tools', command)], {
+      cwd: work,
+      stdio: 'inherit',
+      env: {
+        ...process.env,
+        WANLONG_INTERNAL: '0',
+        WANLONG_BUILD_SUFFIX: '',
+        WANLONG_LOCAL_CACHE: uncached ? '0' : '1',
+        WANLONG_LOCAL_DEM: '1',
+        WANLONG_RAW_DEM: '0',
+        WANLONG_RESORT_SCOPE: scoped ? '1' : '0',
+        WANLONG_LINK_VERSIONS: both ? '1' : '0',
+      },
+    });
+    if (result.status !== 0) process.exit(result.status || 1);
+  }
+  fs.cpSync(path.join(work, 'delivery/wanlong-map'), target, { recursive: true });
+  console.log('Built ' + path.relative(project, path.join(target, 'index.html')));
 }
-fs.mkdirSync(dist, { recursive: true });
-fs.cpSync(path.join(work, 'delivery/wanlong-map'), dist, { recursive: true });
+buildMap(dist, resortOnly);
+if (both) buildMap(path.join(dist, 'resort'), true);
 fs.writeFileSync(path.join(dist, '.nojekyll'), '');
-console.log('Built dist/index.html');

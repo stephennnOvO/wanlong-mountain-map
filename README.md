@@ -2,7 +2,9 @@
 
 基于 Three.js 的万龙滑雪场交互式三维地图，支持雪道查询、索道与设施浏览、多点坡面测距，以及日夜环境切换。
 
-[打开在线演示](https://stephennnovo.github.io/wanlong-mountain-map/)
+[完整地图（默认）](https://stephennnovo.github.io/wanlong-mountain-map/) · [雪场范围版](https://stephennnovo.github.io/wanlong-mountain-map/resort/)
+
+雪场范围版围绕雪道和主要设施裁切地形，减少渲染的地形三角面和树木实例。
 
 ## 功能
 
@@ -41,7 +43,9 @@ npm run preview
 
 | 命令                     | 用途                             |
 | ------------------------ | -------------------------------- |
-| `npm run build`          | 使用已烘焙地形构建网页           |
+| `npm run build`          | 默认构建完整地图                 |
+| `npm run build:resort`   | 仅构建雪场范围版                 |
+| `npm run build:all`      | 构建两个版本，并加上切换入口     |
 | `npm run build:uncached` | 构建在浏览器中重新计算地形的版本 |
 | `npm run preview`        | 预览构建结果                     |
 | `npm run check`          | 检查 JavaScript 语法             |
@@ -72,7 +76,7 @@ docs/       开发文档与数据来源
 
 ## 部署
 
-`main` 分支通过构建和浏览器测试后，GitHub Actions 会将生成的 `dist/` 发布到 GitHub Pages。本地构建可用 `npm run build` 复现，`dist/` 由 Git 忽略。
+`main` 分支通过构建和浏览器测试后，GitHub Actions 会将 `npm run build:all` 生成的 `dist/` 发布到 GitHub Pages。完整地图位于首页，雪场范围版位于 `/resort/`。只构建一个版本时，该版本的入口是 `dist/index.html`。`dist/` 由 Git 忽略。
 
 ## 地图说明
 

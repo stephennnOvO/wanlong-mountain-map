@@ -13,11 +13,10 @@ const mime = {
 http
   .createServer((req, res) => {
     let file;
+    let pathname;
     try {
-      file = path.resolve(
-        root,
-        '.' + decodeURIComponent(new URL(req.url, 'http://localhost').pathname),
-      );
+      pathname = decodeURIComponent(new URL(req.url, 'http://localhost').pathname);
+      file = path.resolve(root, '.' + pathname);
     } catch {
       res.writeHead(400).end();
       return;
@@ -26,7 +25,7 @@ http
       res.writeHead(403).end();
       return;
     }
-    if (file === root || file.endsWith(path.sep)) file = path.join(file, 'index.html');
+    if (file === root || pathname.endsWith('/')) file = path.join(file, 'index.html');
     fs.readFile(file, (error, data) => {
       if (error) {
         res.writeHead(404).end('Not found');

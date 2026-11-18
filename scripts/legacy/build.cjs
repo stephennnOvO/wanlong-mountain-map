@@ -5,10 +5,21 @@ const assetVersion = (source) =>
   crypto.createHash('sha256').update(source).digest('hex').slice(0, 12);
 const root = path.join(__dirname, '..');
 const internal = false;
+const resortOnly = process.env.WANLONG_RESORT_SCOPE === '1';
+const linkVersions = process.env.WANLONG_LINK_VERSIONS === '1';
 const suffix = process.env.WANLONG_BUILD_SUFFIX || (internal ? '-internal' : '');
 if (!/^[a-z-]*$/.test(suffix)) throw Error('Invalid build suffix');
 const outputs = new Map();
 let html = fs.readFileSync(path.join(root, 'shell.html'), 'utf8');
+if (resortOnly) {
+  html = html.replace(/<title>[^<]+<\/title>/, '<title>万龙 · 雪场范围版</title>');
+}
+if (linkVersions) {
+  const link = resortOnly
+    ? '<a class="map-version-link" href="../index.html">查看完整地图</a>'
+    : '<a class="map-version-link" href="resort/index.html">查看雪场范围版</a>';
+  html = html.replace('<div class="brand-sub">WANLONG MOUNTAIN ATLAS</div>', link);
+}
 html = html.replace(
   '<body>',
   '<body><script>' +
@@ -41,6 +52,18 @@ for (const [tag, file] of [
       opening,
       "(async()=>{'use strict';performance.mark('wanlong-app-start');\nconst yieldStartup=()=>new Promise(resolve=>setTimeout(resolve,0));",
     );
+    if (resortOnly) {
+      const layout = JSON.parse(fs.readFileSync(path.join(root, 'bike-route-layout.json'), 'utf8'));
+      const scope = fs.readFileSync(path.join(root, 'resort-scope.js'), 'utf8');
+      source = source.replace(
+        'const resortScope=/* RESORT_SCOPE */ null;',
+        () =>
+          scope +
+          '\nconst resortScope=createResortScope(' +
+          JSON.stringify(layout.routes.flatMap((route) => route.world)) +
+          ');',
+      );
+    }
     for (const stage of ['GEO_TERRAIN', 'GEO_ROUTES', 'FACILITIES']) {
       const marker = '/* ' + stage + ' */';
       if (!source.includes(marker)) throw Error('Missing startup stage: ' + stage);

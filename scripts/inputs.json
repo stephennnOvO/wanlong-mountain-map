@@ -16,6 +16,10 @@
     "target": "app.js"
   },
   {
+    "source": "src/resort-scope.js",
+    "target": "resort-scope.js"
+  },
+  {
     "source": "src/geo-data.js",
     "target": "geo-data.js"
   },

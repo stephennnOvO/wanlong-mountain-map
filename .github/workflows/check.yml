@@ -16,8 +16,10 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run check
-      - run: npm run build
+      - run: npm run build:all
       - name: Test with the runner's Chrome
+        env:
+          WANLONG_TEST_BOTH: '1'
         run: |
           export WANLONG_CHROME="$(command -v google-chrome)"
           "$WANLONG_CHROME" --version

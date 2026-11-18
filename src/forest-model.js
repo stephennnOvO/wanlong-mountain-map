@@ -129,6 +129,7 @@ const treeOccupied = new Map(),
     };
   })();
 function treePlace(x, z, foreground, narrowBelt = null) {
+  if (resortScope && !resortScope.contains(x, z, -12)) return;
   if (reservoir.contains(x, z)) return;
   const evidence = canopyEvidence(x, z);
   if (!evidence) return;

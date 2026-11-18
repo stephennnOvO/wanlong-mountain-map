@@ -6,6 +6,7 @@ function initializeTerrainRenderTiles({
   renderer,
   geo,
   snowMaterial,
+  resortScope,
   exactRendering = () => false,
 }) {
   const source = terrain.geometry,
@@ -48,6 +49,24 @@ function initializeTerrainRenderTiles({
   const frustum = new THREE.Frustum(),
     viewProjection = new THREE.Matrix4();
   const xyz = vertex.array;
+  const included = resortScope && new Uint8Array(vertex.count);
+  if (included) {
+    // Allow triangles that cross the boundary. The renderer clips them precisely.
+    for (let i = 0; i < included.length; i++)
+      included[i] = resortScope.contains(xyz[3 * i], xyz[3 * i + 2], 20);
+  }
+  function scopedIndices(indices, faceMap) {
+    const selected = [];
+    for (let i = 0; i < indices.length; i += 3) {
+      const a = indices[i],
+        b = indices[i + 1],
+        c = indices[i + 2];
+      if (!included[a] && !included[b] && !included[c]) continue;
+      selected.push(a, b, c);
+      if (faceMap) faceMap.push(i / 3);
+    }
+    return new Uint32Array(selected);
+  }
   function geometry(indices, box, sphere) {
     const g = new THREE.BufferGeometry();
     for (const [name, attribute] of Object.entries(attributes)) g.setAttribute(name, attribute);
@@ -74,7 +93,10 @@ function initializeTerrainRenderTiles({
         const first = ((z + startZ) * (cols - 1) + startX) * 6;
         indices.set(sourceIndex.subarray(first, first + width * 6), z * width * 6);
       }
-      const full = geometry(indices, box, sphere);
+      const faceMap = included ? [] : null;
+      const displayIndices = included ? scopedIndices(indices, faceMap) : indices;
+      if (!displayIndices.length) continue;
+      const full = geometry(displayIndices, box, sphere);
       const mesh = new THREE.Mesh(full, terrain.material);
       mesh.name = 'Terrain tile';
       mesh.receiveShadow = terrain.receiveShadow;
@@ -89,6 +111,7 @@ function initializeTerrainRenderTiles({
         endX,
         endZ,
         width,
+        faceMap,
         sphere,
         low: false,
       };
@@ -206,7 +229,9 @@ function initializeTerrainRenderTiles({
       }
     if (!Number.isFinite(error)) return;
     tile.error = error + 0.02;
-    tile.coarse = geometry(new Uint32Array(indices), tile.full.boundingBox, sphere);
+    const displayIndices = included ? scopedIndices(indices) : new Uint32Array(indices);
+    if (displayIndices.length)
+      tile.coarse = geometry(displayIndices, tile.full.boundingBox, sphere);
   }
   // Leave the full-detail tiles ready immediately. Build the optional
   // display meshes in small slices after the first frames.
@@ -227,11 +252,23 @@ function initializeTerrainRenderTiles({
       requestIdleCallback(prepareCoarse, { timeout: 400 });
     else setTimeout(prepareCoarse, 16);
   }
-  scheduleCoarse();
+  if (tiles.length) scheduleCoarse();
   terrain.updateWorldMatrix(true, false);
   group.matrixAutoUpdate = false;
   group.matrix.copy(terrain.matrix);
-  const whole = new THREE.Mesh(source, terrain.material);
+  let overview = source;
+  if (included) {
+    const count = tiles.reduce((total, { full }) => total + full.index.count, 0);
+    const indices = new Uint32Array(count);
+    let offset = 0;
+    for (const { full } of tiles) {
+      indices.set(full.index.array, offset);
+      offset += full.index.count;
+    }
+    overview = geometry(indices, source.boundingBox, source.boundingSphere);
+  }
+  const renderedTriangles = overview.index.count / 3;
+  const whole = new THREE.Mesh(overview, terrain.material);
   whole.name = 'Terrain full-detail overview';
   whole.visible = false;
   group.add(whole);
@@ -275,7 +312,7 @@ function initializeTerrainRenderTiles({
     }
     // Splitting an already visible exact overview would only add draw calls.
     // Reset both paths on every render, including temporary workbench cameras.
-    const useWhole = !visibleCoarse && visibleFullTriangles >= fullCount * 0.97;
+    const useWhole = !visibleCoarse && visibleFullTriangles >= renderedTriangles * 0.97;
     whole.visible = useWhole;
     whole.material = terrain.material;
     whole.receiveShadow = terrain.receiveShadow;
@@ -289,15 +326,17 @@ function initializeTerrainRenderTiles({
   terrain.raycast = function (raycaster, hits) {
     rayMesh.material = this.material;
     rayMesh.matrixWorld.copy(this.matrixWorld);
-    for (const { full, width, startX, startZ } of tiles) {
+    for (const { full, width, startX, startZ, faceMap } of tiles) {
       rayMesh.geometry = full;
       rayHits.length = 0;
       rayMesh.raycast(raycaster, rayHits);
       for (const hit of rayHits) {
-        const cell = Math.floor(hit.faceIndex / 2);
+        if (resortScope && !resortScope.contains(hit.point.x, hit.point.z)) continue;
+        const faceIndex = faceMap ? faceMap[hit.faceIndex] : hit.faceIndex;
+        const cell = Math.floor(faceIndex / 2);
         const i = startX + (cell % width),
           j = startZ + Math.floor(cell / width);
-        hit.faceIndex = 2 * (j * (cols - 1) + i) + (hit.faceIndex % 2);
+        hit.faceIndex = 2 * (j * (cols - 1) + i) + (faceIndex % 2);
         hit.object = this;
         hits.push(hit);
       }
@@ -310,6 +349,6 @@ function initializeTerrainRenderTiles({
     get prepared() {
       return nextCoarse;
     },
-    fullTriangles: fullCount,
+    fullTriangles: renderedTriangles,
   };
 }

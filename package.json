@@ -8,6 +8,8 @@
   },
   "scripts": {
     "build": "node scripts/build.cjs --clean",
+    "build:resort": "npm run build -- --resort",
+    "build:all": "npm run build -- --all",
     "preview": "node scripts/serve.cjs",
     "check": "node scripts/check.cjs",
     "test": "node --test tests/*.test.cjs",

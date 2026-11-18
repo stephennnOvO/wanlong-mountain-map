@@ -3390,6 +3390,14 @@ body.night .location {
 .delivery .top-actions .location {
   display: none;
 }
+.map-version-link {
+  display: inline-block;
+  padding: 3px 0;
+  color: inherit;
+  font-size: 12px;
+  white-space: nowrap;
+  text-underline-offset: 3px;
+}
 .delivery .top .guest-navigation {
   position: static;
   inset: auto;

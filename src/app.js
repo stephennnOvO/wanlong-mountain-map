@@ -2,6 +2,8 @@
 (()=>{'use strict';
 const DELIVERY_MODE=/* DELIVERY_MODE */ true;
 const $=id=>document.getElementById(id), V=THREE.Vector3, clamp=THREE.MathUtils.clamp, lerp=THREE.MathUtils.lerp;
+const resortScope=/* RESORT_SCOPE */ null;
+if(resortScope)lifts.splice(0,lifts.length,...lifts.filter(lift=>lift.id!==8));
 let seed=76103;function rand(){seed=(Math.imul(seed,1664525)+1013904223)>>>0;return seed/4294967296;}
 const state={tab:'trails',filter:'all',query:'',selected:null,snow:false,trees:true,skiers:true,routes:false,labels:true,paused:false,intensity:32,wind:18,speed:1,time:'day',quality:'low',mode:'orbit',rideT:0,activeLift:null};
 let labelGeneration=0;
@@ -12,6 +14,7 @@ let renderer;
 try{renderer=new THREE.WebGLRenderer({antialias:true,alpha:false,powerPreference:'high-performance',preserveDrawingBuffer:false});}
 catch(err){if(DELIVERY_MODE){window.dispatchEvent(new Event('wanlong-webgl-unavailable'));return;}$('loading').hidden=true;const box=document.createElement('div');box.className='error';box.innerHTML='<div><div class="eyebrow">WANLONG MOUNTAIN ATLAS</div><h2>这个雪境需要 WebGL 图形支持</h2><p>请在 Chrome 或 Edge 中启用硬件加速后重新打开。雪道与索道资料仍可在下方查看。</p><button class="primary" id="fallback-sources">阅读资料与来源</button><div class="error-list">'+trails.map(t=>'<p>'+t.name+' · '+levels[t.level].label+' · '+t.length+' m · 均坡 '+(t.avg??'—')+'°</p>').join('')+'</div></div>';document.body.append(box);$('fallback-sources').onclick=()=>{$('sources').hidden=false;$('sources').style.zIndex=70;};document.querySelector('.close-modal').onclick=()=>{$('sources').hidden=true;};return;}
 renderer.setPixelRatio(1);renderer.setSize(innerWidth,innerHeight);
+if(resortScope)renderer.clippingPlanes=resortScope.planes;
 renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=.96;
 renderer.shadowMap.enabled=false;renderer.shadowMap.type=THREE.PCFSoftShadowMap;
 $('scene').appendChild(renderer.domElement);
@@ -223,9 +226,9 @@ const snow=new THREE.Points(snowGeo,snowMaterial);snow.frustumCulled=false;scene
 // A few tiny skiers give the piste a human scale; they are deliberately sparse.
 const skierCount=32,skierBody=new THREE.InstancedMesh(new THREE.BoxGeometry(.42,.82,.30),material('#bc6756'),skierCount),skierHeads=new THREE.InstancedMesh(new THREE.SphereGeometry(.15,10,7),material('#e8d7b7'),skierCount),skierSkis=new THREE.InstancedMesh(new THREE.BoxGeometry(.60,.055,1.75),material('#4f6e75'),skierCount);const skierGroup=new THREE.Group();skierGroup.name='雪道滑行者';const skierLegs=new THREE.InstancedMesh(new THREE.BoxGeometry(.13,.65,.16),material('#40565c'),skierCount*2);skierGroup.add(skierBody,skierHeads,skierSkis,skierLegs);scene.add(skierGroup);const skiers=Array.from({length:skierCount},(_,i)=>({trail:trails.filter(t=>t.mapped)[i%trails.filter(t=>t.mapped).length],phase:rand(),speed:.006+rand()*.008}));
 // Orbit camera uses damping and supports single-pointer orbit plus two-pointer pan/pinch.
-const home={theta:.03,phi:1.01,radius:innerWidth<=760?8200:6600,target:new V(0,280,0)};
+const home={theta:.03,phi:1.01,radius:resortScope?(innerWidth<=760?6200:5100):(innerWidth<=760?8200:6600),target:new V(resortScope?.center.x??0,280,resortScope?.center.z??0)};
 const orbit={theta:home.theta,phi:home.phi,radius:home.radius,target:home.target.clone()},desired={theta:home.theta,phi:home.phi,radius:home.radius,target:home.target.clone()};
-function resetView(top=false){exitExperience(false);document.body.classList.remove('exploring');clearSelection();desired.theta=top?0:home.theta;desired.phi=top?.16:home.phi;desired.radius=top?(innerWidth<=760?6500:5200):(innerWidth<=760?8200:home.radius);desired.target.copy(home.target);$('view-top').classList.toggle('active',top);$('view-home').classList.toggle('active',!top);}
+function resetView(top=false){exitExperience(false);document.body.classList.remove('exploring');clearSelection();desired.theta=top?0:home.theta;desired.phi=top?.16:home.phi;desired.radius=top?(innerWidth<=760?6500:5200):(resortScope?home.radius:(innerWidth<=760?8200:home.radius));desired.target.copy(home.target);$('view-top').classList.toggle('active',top);$('view-home').classList.toggle('active',!top);}
 function orbitPosition(){const s=Math.sin(orbit.phi);return new V(Math.sin(orbit.theta)*s*orbit.radius,Math.cos(orbit.phi)*orbit.radius,Math.cos(orbit.theta)*s*orbit.radius).add(orbit.target);}
 camera.position.copy(orbitPosition());camera.lookAt(orbit.target);
 /* CAMERA_CONTROLS */
@@ -525,8 +528,9 @@ document.addEventListener('visibilitychange',()=>{
 /* INTERFACE_UI */
 if(DELIVERY_MODE)initializeDeliveryUI();
 /* PERFORMANCE_RENDER */
-const terrainRenderTiles=initializeTerrainRenderTiles({terrain,scene,renderer,geo:GEO,snowMaterial:snowMat,
+const terrainRenderTiles=initializeTerrainRenderTiles({terrain,scene,renderer,geo:GEO,snowMaterial:snowMat,resortScope,
  exactRendering:()=>state.imagery||state.quality==='high'||state.mode==='ski'||state.mode==='lift'});
+if(resortScope)addResortBoundaryWall(resortScope);
 const spatialRender=initializeSceneSpatialCulling({scene,camera,forest,treeData,liftRuntimes});
 updateVehicles(0);
 requestSceneFrame();
