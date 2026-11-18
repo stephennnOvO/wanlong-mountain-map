@@ -1,0 +1,23 @@
+{
+  "name": "wanlong-mountain-map",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Interactive 3D map of Wanlong ski resort",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "build": "node scripts/build.cjs --clean",
+    "preview": "node scripts/serve.cjs",
+    "check": "node scripts/check.cjs",
+    "test": "node --test tests/*.test.cjs",
+    "build:uncached": "node scripts/build.cjs --clean --uncached",
+    "format": "prettier --write src scripts tests docs README.md",
+    "format:check": "prettier --check src scripts tests docs README.md"
+  },
+  "devDependencies": {
+    "playwright": "1.56.1",
+    "prettier": "3.10.0"
+  },
+  "license": "MIT"
+}

@@ -1,0 +1,53 @@
+{
+  "wucaiReturnWidthReview": {
+    "source": "高清卫星图/屏幕截图 2026-11-04 092320.png",
+    "scope": "五彩龙原折回段源顶点18–25；与主线分开量读",
+    "winterPixelSections": [
+      [
+        [
+          171,
+          245
+        ],
+        [
+          169,
+          252
+        ]
+      ],
+      [
+        [
+          207,
+          267
+        ],
+        [
+          202,
+          273
+        ]
+      ],
+      [
+        [
+          237,
+          296
+        ],
+        [
+          233,
+          300
+        ]
+      ]
+    ],
+    "imageWidthStatus": "冬图可辨为数个原始像素的窄带；按局部影像比例仅作约8–12m宽度估读，不能当作现场测量。边缘/阴影误差约数米。",
+    "sourceVertexStart": 18,
+    "sourceVertexEnd": 25,
+    "widthsM": [
+      18,
+      12,
+      10,
+      9,
+      8,
+      9,
+      11,
+      14
+    ],
+    "transitionNote": "入口18m、出口14m为与两端雪面衔接的渐变；中段8–12m。仅收窄折回段，不改变主线及其他支路。",
+    "status": "winter-image-width-estimate-not-surveyed"
+  }
+}

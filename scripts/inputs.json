@@ -1,0 +1,250 @@
+[
+  {
+    "source": "src/shell.html",
+    "target": "shell.html"
+  },
+  {
+    "source": "src/styles.css",
+    "target": "styles.css"
+  },
+  {
+    "source": "src/data.js",
+    "target": "data.js"
+  },
+  {
+    "source": "src/app.js",
+    "target": "app.js"
+  },
+  {
+    "source": "src/geo-data.js",
+    "target": "geo-data.js"
+  },
+  {
+    "source": "src/geo-projection.js",
+    "target": "geo-projection.js"
+  },
+  {
+    "source": "src/geo-link.js",
+    "target": "geo-link.js"
+  },
+  {
+    "source": "src/season-notes.js",
+    "target": "season-notes.js"
+  },
+  {
+    "source": "src/site-plan.js",
+    "target": "site-plan.js"
+  },
+  {
+    "source": "src/runtime-performance.js",
+    "target": "runtime-performance.js"
+  },
+  {
+    "source": "src/camera-controls.js",
+    "target": "camera-controls.js"
+  },
+  {
+    "source": "src/delivery-ui.js",
+    "target": "delivery-ui.js"
+  },
+  {
+    "source": "data/layouts/bike-route-layout.json",
+    "target": "bike-route-layout.json"
+  },
+  {
+    "source": "src/map-facilities.js",
+    "target": "map-facilities.js"
+  },
+  {
+    "source": "src/interface-ui.js",
+    "target": "interface-ui.js"
+  },
+  {
+    "source": "src/terrain-render-lod.js",
+    "target": "terrain-render-lod.js"
+  },
+  {
+    "source": "src/scene-spatial-culling.js",
+    "target": "scene-spatial-culling.js"
+  },
+  {
+    "source": "src/apartment-model.js",
+    "target": "apartment-model.js"
+  },
+  {
+    "source": "src/hotel-model.js",
+    "target": "hotel-model.js"
+  },
+  {
+    "source": "src/facility-geometry.js",
+    "target": "facility-geometry.js"
+  },
+  {
+    "source": "src/station-details.js",
+    "target": "station-details.js"
+  },
+  {
+    "source": "src/pylon-details.js",
+    "target": "pylon-details.js"
+  },
+  {
+    "source": "src/vehicle-details.js",
+    "target": "vehicle-details.js"
+  },
+  {
+    "source": "src/cableways.js",
+    "target": "cableways.js"
+  },
+  {
+    "source": "src/park-model.js",
+    "target": "park-model.js"
+  },
+  {
+    "source": "src/natural-valleys.js",
+    "target": "natural-valleys.js"
+  },
+  {
+    "source": "src/forest-cover-data.js",
+    "target": "forest-cover-data.js"
+  },
+  {
+    "source": "src/forest-model.js",
+    "target": "forest-model.js"
+  },
+  {
+    "source": "src/geo-terrain.js",
+    "target": "geo-terrain.js"
+  },
+  {
+    "source": "src/trail-width-data.js",
+    "target": "trail-width-data.js"
+  },
+  {
+    "source": "src/trail-footprints.js",
+    "target": "trail-footprints.js"
+  },
+  {
+    "source": "src/lift-support-layout.js",
+    "target": "lift-support-layout.js"
+  },
+  {
+    "source": "src/geo-routes.js",
+    "target": "geo-routes.js"
+  },
+  {
+    "source": "src/terrain-surface.js",
+    "target": "terrain-surface.js"
+  },
+  {
+    "source": "src/hotel-snow-flow.js",
+    "target": "hotel-snow-flow.js"
+  },
+  {
+    "source": "src/piste-grade-limiter.js",
+    "target": "piste-grade-limiter.js"
+  },
+  {
+    "source": "src/local-piste-terrain.js",
+    "target": "local-piste-terrain.js"
+  },
+  {
+    "source": "src/piste-foundations.js",
+    "target": "piste-foundations.js"
+  },
+  {
+    "source": "src/site-reconstruction.js",
+    "target": "site-reconstruction.js"
+  },
+  {
+    "source": "src/hotel-access-bridges.js",
+    "target": "hotel-access-bridges.js"
+  },
+  {
+    "source": "data/layouts/reservoir-layout.json",
+    "target": "reservoir-layout.json"
+  },
+  {
+    "source": "src/reservoir.js",
+    "target": "reservoir.js"
+  },
+  {
+    "source": "src/geo-ui.js",
+    "target": "geo-ui.js"
+  },
+  {
+    "source": "src/wild-corridors.js",
+    "target": "wild-corridors.js"
+  },
+  {
+    "source": "src/geo-reference.js",
+    "target": "geo-reference.js"
+  },
+  {
+    "source": "src/scene-access.js",
+    "target": "scene-access.js"
+  },
+  {
+    "source": "src/magic-carpet-model.js",
+    "target": "magic-carpet-model.js"
+  },
+  {
+    "source": "src/weather-system.js",
+    "target": "weather-system.js"
+  },
+  {
+    "source": "src/official-map-features.js",
+    "target": "official-map-features.js"
+  },
+  {
+    "source": "src/official-map-viewer.js",
+    "target": "official-map-viewer.js"
+  },
+  {
+    "source": "src/night-scene.js",
+    "target": "night-scene.js"
+  },
+  {
+    "source": "src/summit-buildings.js",
+    "target": "summit-buildings.js"
+  },
+  {
+    "source": "src/dining-ui.js",
+    "target": "dining-ui.js"
+  },
+  {
+    "source": "data/inputs/audit.json",
+    "target": "research/trail-reconciliation/audit.json"
+  },
+  {
+    "source": "data/inputs/manual-review.json",
+    "target": "research/trail-reconciliation/manual-review.json"
+  },
+  {
+    "source": "data/inputs/surface-areas.json",
+    "target": "research/trail-reconciliation/surface-areas.json"
+  },
+  {
+    "source": "data/inputs/comparison.json",
+    "target": "research/bike-perspective/comparison.json"
+  },
+  {
+    "source": "data/inputs/local-terrain-cache.json",
+    "target": "research/restart-20261104/local-terrain-cache.json"
+  },
+  {
+    "source": "data/terrain/piste-crossfall-reference.bin",
+    "target": "baked/piste-crossfall-reference.bin"
+  },
+  {
+    "source": "data/terrain/crossfall-local.json",
+    "target": "baked/crossfall-local.json"
+  },
+  {
+    "source": "vendor/three.min.js",
+    "target": "vendor/three.min.js"
+  },
+  {
+    "source": "vendor/THREE-LICENSE.txt",
+    "target": "vendor/THREE-LICENSE.txt"
+  }
+]

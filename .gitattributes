@@ -1,0 +1,14 @@
+# Preserve the bytes covered by build integrity checks.
+src/geo-data.js -text
+src/geo-projection.js -text
+src/geo-link.js -text
+src/geo-routes.js -text
+src/trail-footprints.js -text
+src/trail-width-data.js -text
+src/local-piste-terrain.js -text
+src/piste-grade-limiter.js -text
+src/hotel-snow-flow.js -text
+src/lift-support-layout.js -text
+data/inputs/local-terrain-cache.json -text
+data/terrain/piste-crossfall-reference.bin -text
+data/terrain/crossfall-local.json -text
