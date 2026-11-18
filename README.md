@@ -2,6 +2,8 @@
 
 基于 Three.js 的万龙滑雪场交互式三维地图，支持雪道查询、索道与设施浏览、多点坡面测距，以及日夜环境切换。
 
+[打开在线演示](https://stephennnovo.github.io/wanlong-mountain-map/)
+
 ## 功能
 
 - 三维地形与雪道、索道、酒店和山地设施展示
@@ -70,7 +72,7 @@ docs/       开发文档与数据来源
 
 ## 部署
 
-运行 `npm run build`，将 `dist/` 目录中的文件部署到静态网站服务。使用 GitHub Pages 时，将发布目录设为构建产物 `dist/`。
+`main` 分支通过构建和浏览器测试后，GitHub Actions 会将生成的 `dist/` 发布到 GitHub Pages。本地构建可用 `npm run build` 复现，`dist/` 由 Git 忽略。
 
 ## 地图说明
 
