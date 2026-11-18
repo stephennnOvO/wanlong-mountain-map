@@ -2,7 +2,7 @@ name: Check
 on: [push, pull_request]
 jobs:
   check:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -10,7 +10,10 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
-      - run: npx playwright install --with-deps chromium
       - run: npm run check
       - run: npm run build
-      - run: npm test
+      - name: Test with the runner's Chrome
+        run: |
+          export WANLONG_CHROME="$(command -v google-chrome)"
+          "$WANLONG_CHROME" --version
+          npm test
